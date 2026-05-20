@@ -1,0 +1,41 @@
+{
+    "contract_date": "2026-05-08",
+    "broker": "dhan",
+    "notes": "Dhan contract note — F&O segment, 2 stock option trades",
+    "trades": [
+        {
+            "symbol": "DELHIVERY",
+            "instrument": "26May2026 500 CE",
+            "segment": "options",
+            "trade_type": "intraday",
+            "side": "sell",
+            "exchange": "nse",
+            "price": 500.0,
+            "quantity": 1,
+            "lot_size": 2075,
+            "premium": 9.0,
+            "strike_price": 500.0
+        },
+        {
+            "symbol": "PNBHOUSING",
+            "instrument": "26May2026 1100 CE",
+            "segment": "options",
+            "trade_type": "intraday",
+            "side": "buy",
+            "exchange": "nse",
+            "price": 1100.0,
+            "quantity": 1,
+            "lot_size": 650,
+            "premium": 27.50,
+            "strike_price": 1100.0
+        }
+    ],
+    "contract_note_actuals": {
+        "brokerage": 40.00,
+        "nse_transaction_charges": 12.99,
+        "sebi_fees": 0.04,
+        "gst_igst_18": 9.55,
+        "stamp_duty": 1.00,
+        "stt": 28.00
+    }
+}
