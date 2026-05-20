@@ -1,0 +1,87 @@
+# ==========================================================================
+# Dhan Broker Profile
+# ==========================================================================
+# Source: https://dhan.co/pricing/ and https://dhan.co/margin-trading-facility/
+# Last verified: 2025-06
+# ==========================================================================
+
+broker_name: "Dhan"
+
+# --------------------------------------------------------------------------
+# Brokerage Schedule
+# --------------------------------------------------------------------------
+# Dhan uses three models depending on segment:
+#   flat       — fixed ₹ per executed order
+#   zero       — no brokerage
+#   min_of     — min(flat_amount, percentage × trade_value)
+
+brokerage:
+  equity_delivery:
+    model: "zero"
+    rate: 0
+
+  equity_intraday:
+    model: "min_of"
+    flat: 20                  # ₹20
+    percentage: 0.0003        # 0.03% of trade value
+
+  futures:
+    model: "flat"
+    rate: 20
+
+  options:
+    model: "flat"
+    rate: 20
+
+  etf_delivery:
+    model: "zero"
+    rate: 0
+
+  etf_intraday:
+    model: "min_of"
+    flat: 20
+    percentage: 0.0003
+
+
+# --------------------------------------------------------------------------
+# DP Charges (overrides default)
+# --------------------------------------------------------------------------
+dp_charges:
+  rate_per_instruction: 12.50   # ₹12.50 per ISIN per day (lower than CDSL default)
+  gst_applicable: true
+
+
+# --------------------------------------------------------------------------
+# Margin Trading Facility (MTF)
+# --------------------------------------------------------------------------
+# Source: https://dhan.co/margin-trading-facility/
+#
+# Interest slabs — FLAT (not marginal/incremental).
+# "As soon as your funding value crosses ₹5 Lakh, the interest rate for
+#  your entire funded amount will be updated to 13.49%"
+#
+# Interest timing:
+#   Start: T+1 (settlement date of buy)
+#   End:   day before sell settlement funds received
+
+mtf:
+  interest_slabs:
+    - upper_limit: 500000
+      annual_rate: 0.1249       # 12.49%
+    - upper_limit: 1000000
+      annual_rate: 0.1349       # 13.49%
+    - upper_limit: 2500000
+      annual_rate: 0.1449       # 14.49%
+    - upper_limit: 5000000
+      annual_rate: 0.1549       # 15.49%
+    - upper_limit: null         # no cap — ₹50L+
+      annual_rate: 0.1649       # 16.49%
+
+  slab_type: "flat"             # entire amount at the slab rate it falls into
+  default_leverage: 4.0         # default 4× — varies per stock (user overrides)
+  pledge_charge_per_isin: 15.0  # ₹15 per transaction per ISIN (pledge/unpledge)
+  interest_start: "T+1"
+  interest_end: "sell_settlement_minus_1"
+  max_funding_per_stock: 2000000    # ₹20 lakh per scrip
+  max_total_funding: 100000000      # ₹1 crore total MTF limit
+  liquidation_threshold: 0.20       # RMS squares off if coverage < 20%

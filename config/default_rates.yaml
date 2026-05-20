@@ -1,0 +1,145 @@
+# ==========================================================================
+# NSE Transaction Cost Engine — Default Rate Schedule
+# ==========================================================================
+# Source: NSE circulars, SEBI notifications, broker contract notes
+# Last verified: 2025-06 (post Budget 2024 STT revision, effective Oct 2024)
+#
+# IMPORTANT: When rates change, update this file with the new values and
+# set effective_date to the date the new rates take effect. Do NOT modify
+# code — the engine reads everything from here.
+# ==========================================================================
+
+version: "2025-06"
+effective_date: "2024-10-01"   # STT rates revised effective 1 Oct 2024
+currency: "INR"
+
+# --------------------------------------------------------------------------
+# Securities Transaction Tax (STT)
+# --------------------------------------------------------------------------
+# Charged by: Central Government, collected by exchange
+# Reference: Finance Act 2004, amended by Finance (No. 2) Act 2024
+#
+# Each entry has:
+#   rate  — decimal (0.001 = 0.1%)
+#   on    — base amount: trade_value | premium_value | intrinsic_value
+#   side  — which leg(s): buy | sell | both | exercise
+
+stt:
+  equity_delivery:
+    rate: 0.001            # 0.1%
+    base_on: "trade_value"
+    side: "both"           # charged on BOTH buy and sell
+
+  equity_intraday:
+    rate: 0.00025          # 0.025%
+    base_on: "trade_value"
+    side: "sell"
+
+  futures:
+    rate: 0.0005           # 0.05% (revised from 0.0125% → 0.02% → 0.05%)
+    base_on: "trade_value"
+    side: "sell"
+
+  options:
+    rate: 0.0015           # 0.15% (revised from 0.0625% → 0.1% → 0.15%)
+    base_on: "premium_value"
+    side: "sell"
+
+  options_exercise:
+    rate: 0.0015           # 0.15% on intrinsic value at exercise
+    base_on: "intrinsic_value"
+    side: "exercise"
+
+  etf_delivery:
+    rate: 0.00001          # 0.001%
+    base_on: "trade_value"
+    side: "sell"
+
+  etf_intraday:
+    rate: 0.00025          # 0.025%
+    base_on: "trade_value"
+    side: "sell"
+
+
+# --------------------------------------------------------------------------
+# Exchange Transaction Charges
+# --------------------------------------------------------------------------
+# Charged by: NSE / BSE for order matching and clearing
+# Rates are decimal fractions of turnover (or premium for options)
+
+exchange_charges:
+  nse:
+    equity: 0.000030699      # 0.0030699%
+    futures: 0.000018299     # 0.0018299%
+    options: 0.000355299     # 0.0355299% on premium
+    etf: 0.000030699         # same as equity
+
+  bse:
+    equity: 0.0000375        # 0.00375%
+    futures: 0.0             # zero — BSE waives to attract volume
+    options_index: 0.000325  # 0.0325% on premium (index options)
+    options_stock: 0.00005   # 0.005% on premium (stock options)
+    etf: 0.0000375
+
+
+# --------------------------------------------------------------------------
+# SEBI Turnover Fee
+# --------------------------------------------------------------------------
+# Charged by: SEBI (regulator), collected via exchange
+# Uniform across all segments: ₹10 per crore = 0.0001%
+
+sebi_turnover_fee:
+  rate: 0.000001             # 0.0001%
+
+
+# --------------------------------------------------------------------------
+# Investor Protection Fund Trust (IPFT) Contribution
+# --------------------------------------------------------------------------
+# Charged by: Exchange, mandated by SEBI
+# Negligible but part of GST base
+
+ipft:
+  rate: 0.000000001          # 0.0000001% — ₹0.01 per crore
+
+
+# --------------------------------------------------------------------------
+# Stamp Duty
+# --------------------------------------------------------------------------
+# Charged by: State/Central Government, collected by exchange
+# Since 2020 reform: uniform national rates, charged on BUY side only
+# Rates are decimal fractions of turnover
+
+stamp_duty:
+  equity_delivery: 0.00015   # 0.015%
+  equity_intraday: 0.00003   # 0.003%
+  futures: 0.00002           # 0.002%
+  options: 0.00003           # 0.003% on premium
+  etf_delivery: 0.00015      # 0.015%
+  etf_intraday: 0.00003      # 0.003%
+
+
+# --------------------------------------------------------------------------
+# GST (Goods and Services Tax)
+# --------------------------------------------------------------------------
+# 18% on: brokerage + exchange transaction charges + SEBI fee + IPFT
+# NOT on: STT (direct tax) or stamp duty (state levy)
+
+gst:
+  rate: 0.18
+  applies_on:
+    - brokerage
+    - exchange_charges
+    - sebi_turnover_fee
+    - ipft
+
+
+# --------------------------------------------------------------------------
+# Depository Participant (DP) Charges
+# --------------------------------------------------------------------------
+# Charged by: DP (broker/bank) on behalf of CDSL/NSDL
+# Applies: delivery sell transactions only, per ISIN per day
+# Note: broker-specific rates override this in broker profiles
+
+dp_charges:
+  rate_per_instruction: 15.93   # ₹ per ISIN per day (CDSL default)
+  gst_applicable: true

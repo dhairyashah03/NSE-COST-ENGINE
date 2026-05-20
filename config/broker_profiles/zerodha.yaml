@@ -1,0 +1,40 @@
+# ==========================================================================
+# Zerodha Broker Profile
+# ==========================================================================
+# Source: https://zerodha.com/charges
+# Last verified: 2025-06
+# ==========================================================================
+
+broker_name: "Zerodha"
+
+brokerage:
+  equity_delivery:
+    model: "zero"
+    rate: 0
+
+  equity_intraday:
+    model: "min_of"
+    flat: 20
+    percentage: 0.0003        # 0.03%
+
+  futures:
+    model: "min_of"
+    flat: 20
+    percentage: 0.0003
+
+  options:
+    model: "flat"
+    rate: 20
+
+  etf_delivery:
+    model: "zero"
+    rate: 0
+
+  etf_intraday:
+    model: "min_of"
+    flat: 20
+    percentage: 0.0003
+
+dp_charges:
+  rate_per_instruction: 15.93   # CDSL standard
+  gst_applicable: true

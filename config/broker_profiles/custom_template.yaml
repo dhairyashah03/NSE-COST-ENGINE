@@ -1,0 +1,49 @@
+# ==========================================================================
+# Custom Broker Profile — Template
+# ==========================================================================
+# Copy this file, rename to your_broker.yaml, and fill in the rates.
+# Only define keys you want to override — everything else falls through
+# to default_rates.yaml.
+# ==========================================================================
+
+broker_name: "MyBroker"
+
+brokerage:
+  equity_delivery:
+    model: "percentage"        # options: zero, flat, percentage, min_of, slab
+    rate: 0.003                # 0.3% of trade value
+
+  equity_intraday:
+    model: "min_of"
+    flat: 20
+    percentage: 0.0003
+
+  futures:
+    model: "flat"
+    rate: 20
+
+  options:
+    model: "flat"
+    rate: 20
+
+  etf_delivery:
+    model: "zero"
+    rate: 0
+
+  etf_intraday:
+    model: "flat"
+    rate: 20
+
+dp_charges:
+  rate_per_instruction: 15.93
+  gst_applicable: true
+
+# Uncomment and fill if your broker offers MTF
+# mtf:
+#   interest_slabs:
+#     - upper_limit: 500000
+#       annual_rate: 0.12
+#     - upper_limit: null
+#       annual_rate: 0.15
+#   slab_type: "flat"
+#   default_funding_pct: 0.75
